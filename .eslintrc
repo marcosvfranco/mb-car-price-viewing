@@ -21,6 +21,11 @@
         "indent": ["error", 4],
         // we want to avoid extraneous spaces
         "no-multi-spaces": ["error"],
-        "no-multiple-empty-lines": ["error", {"max": 1}]
+        "no-multiple-empty-lines": ["error", {"max": 1}],
+        "no-trailing-spaces": ["error"],
+        "eqeqeq": ["error"],
+        "eol-last": ["error"],
+        "playwright/no-page-pause": ["warn"],
+        "playwright/missing-playwright-await": ["error"]
     }
 }
