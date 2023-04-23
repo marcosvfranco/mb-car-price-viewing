@@ -10,6 +10,7 @@ export default class A_ClassHatchbackPage extends BasePage {
     }
 
     async clickBuildYourCarButton() {
-        await this.buildYourCarButton.click();
+        await this.page.getByText(' Buying an A-Class Hatchback ').hover();
+        await this.buildYourCarButton.click({timeout: 5000});
     }
 }

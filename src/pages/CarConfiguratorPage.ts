@@ -24,8 +24,8 @@ export default class CarConfiguratorPage extends BasePage {
         await this.filterTextContainer.click();
     }
 
-    async takeScreenshotEngineVariants() {
-        await this.engineVariantsResultContainer.screenshot({ path: 'artifacts/screenshots/engine-variants.png'});
+    async takeScreenshotEngineVariants(browserName: string) {
+        await this.engineVariantsResultContainer.screenshot({ path: `artifacts/screenshots/engine-variants_${browserName}.png`});
     }
 
     async getMaxMinModelPrices(): Promise<iMinMaxPrices> {

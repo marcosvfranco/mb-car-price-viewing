@@ -4,29 +4,46 @@ import A_ClassHatchbackPage from '../src/pages/A_ClassHatchbackPage';
 import CarConfiguratorPage from '../src/pages/CarConfiguratorPage';
 import fs from 'fs';
 
-test('Validate A Class models price are between £15,000 and £60,000', async ({ page }) => {
-    test.slow();
-    const landingPage = new LandingPage(page);
-    const aClassHatchbackPage = new A_ClassHatchbackPage(page);
-    const carConfiguratorPage = new CarConfiguratorPage(page);
+test.describe('Configure Vehicle Worflow', async () => {
+    let landingPage: LandingPage;
+    let aClassHatchbackPage: A_ClassHatchbackPage;
+    let carConfiguratorPage: CarConfiguratorPage;
 
-    await landingPage.visit();
-    await expect(page, 'Not in Mercedes-Benz website').toHaveTitle(/Mercedes-Benz/);
+    let minMaxPrices;
 
-    await landingPage.acceptAllCookies();
-    await landingPage.selectAClassHathbackModel();
+    test.beforeEach(async ({ page }) => {
+        landingPage = new LandingPage(page);
+        aClassHatchbackPage = new A_ClassHatchbackPage(page);
+        carConfiguratorPage = new CarConfiguratorPage(page);
+    });
 
-    await aClassHatchbackPage.clickBuildYourCarButton();
+    test('Validate A Class models price are between £15,000 and £60,000', async ({ page, browserName }) => {
+        test.slow();
 
-    await carConfiguratorPage.filterByDieselEngine();
-    await carConfiguratorPage.takeScreenshotEngineVariants();
-    const minMaxPrices = await carConfiguratorPage.getMaxMinModelPrices();
+        await test.step('Acessing configuration car Page', async() => {
+            await landingPage.visit();
+            await expect(page, 'Not in Mercedes-Benz website').toHaveTitle(/Mercedes-Benz/);
 
-    await expect(minMaxPrices.maxValue, 'Max Price exceeded').toBeLessThanOrEqual(60000);
-    await expect(minMaxPrices.minValue, 'Min Price exceeded').toBeGreaterThanOrEqual(15000);
+            await landingPage.acceptAllCookies();
+            await landingPage.selectAClassHathbackModel();
 
-    await fs.writeFile('artifacts/prices.txt',`${minMaxPrices.maxValue}\n${minMaxPrices.minValue}`, 'utf-8', (err) => {
-        if (err) throw err;
-        console.log('Prices saved in file with success');
+            await aClassHatchbackPage.clickBuildYourCarButton();
+        });
+
+        await test.step('Filtering Models by Fuel Type: Diesel', async() => {
+            await carConfiguratorPage.filterByDieselEngine();
+            await carConfiguratorPage.takeScreenshotEngineVariants(browserName);
+        });
+
+        await test.step('Registering artifacts and asserting prices', async() => {
+            minMaxPrices = await carConfiguratorPage.getMaxMinModelPrices();
+
+            await fs.writeFile(`artifacts/prices_${browserName}.txt`,`${minMaxPrices.maxValue}\n${minMaxPrices.minValue}`, 'utf-8', (err) => {
+                if (err) throw err;
+            });
+
+            await expect(minMaxPrices.maxValue, 'Max Price exceeded').toBeLessThanOrEqual(60000);
+            await expect(minMaxPrices.minValue, 'Min Price exceeded').toBeGreaterThanOrEqual(15000);
+        });
     });
 });
