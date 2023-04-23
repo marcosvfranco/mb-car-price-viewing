@@ -6,6 +6,7 @@ Page Objects Model was used to organize the tests. Also I used a Component Patte
 Besides: on `src\utils` there is a `eSelectors.ts` file with separated selector values and other constants for the tests.  
 I implemented the `LandingPage.ts` using this file to separate the selectors in another file, but I also implemented the other Page Objects inserting the selectors directly in the Locators, thats another way to already define the Locators not spliting the modularization too much.
 
+Fianlly, there is a CI implemented on Github Actions, take a look in the Actions tab to see this working.
 ## Pre requisites
 - NodeJS - at least 18.14.0
 
